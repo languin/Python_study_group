@@ -1,6 +1,22 @@
+import cmath
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+
+
+def format_complex(number: complex) -> str:
+    real_part = number.real
+    imag_part = number.imag
+    real_text = f"{real_part:.4f}"
+    imag_text = f"{abs(imag_part):.4f}i"
+
+    if abs(imag_part) < 1e-12:
+        return real_text
+
+    sign = "+" if imag_part >= 0 else "-"
+    if abs(real_part) < 1e-12:
+        real_text = "0.0000"
+    return f"{real_text} {sign} {imag_text}"
 
 
 def calculate_roots():
@@ -31,7 +47,12 @@ def calculate_roots():
         result_lines.append("Один действительный корень:")
         result_lines.append(f"x₁ = x₂ = {x:.4f}")
     else:
-        result_lines.append("Действительных корней нет (мнимые корни)")
+        sqrt_d = cmath.sqrt(discriminant)
+        x1 = (-b + sqrt_d) / (2 * a)
+        x2 = (-b - sqrt_d) / (2 * a)
+        result_lines.append("Два комплексных корня:")
+        result_lines.append(f"x₁ = {format_complex(x1)}")
+        result_lines.append(f"x₂ = {format_complex(x2)}")
 
     result_text.configure(state="normal")
     result_text.delete("1.0", tk.END)
